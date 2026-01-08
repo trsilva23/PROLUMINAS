@@ -16,7 +16,7 @@ O **JsonModern** abstrai a complexidade de manipular dados JSON no Protheus, per
 ## Instrução
 - Protheus com suporte a **TLPP** (disponível por padrão em JAN/2026).
 - AppServer atualizado.
-```advpl
+advpl
 Local oJson
 If U_ParseJSON('{"id": 1, "nome": "Teste"}', @oJson)
     ConOut(oJson[# "nome"]) // Saída: Teste
