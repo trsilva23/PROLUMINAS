@@ -1,0 +1,59 @@
+#include 'totvs.ch'
+#include 'json_modern.ch'
+
+/*/{Protheus.doc} JsonModern
+    Classe para manipulação de JSON utilizando o motor nativo do Protheus (2026).
+    @author  trsilva23 (trsilva23.contato@gmail.com)
+    @since   08/01/2026
+    @version 2.0
+/*/
+Class JsonModern
+    Data oInternalJson as Object
+    Data cError as String
+
+    Method New(xData) Constructor
+    Method Parse() as Logical
+    Method Stringify(lPretty) as String
+    Method GetObject() as Object
+EndClass
+
+Method New(xData) Class JsonModern
+    ::oInternalJson := JsonObject():New()
+    ::cError := ""
+    
+    // Se receber uma string, pode ser o JSON bruto
+    If ValType(xData) == "C" .And. !Empty(xData)
+        // Se for um caminho de arquivo, lê o conteúdo
+        If File(xData)
+            xData := MemoRead(xData)
+        EndIf
+        ::cError := ::oInternalJson:FromJson(xData)
+    EndIf
+Return Self
+
+Method Parse() Class JsonModern
+    Return Empty(::cError)
+EndMethod
+
+Method Stringify(lPretty) Class JsonModern
+    Default lPretty := .F.
+    Return ::oInternalJson:ToJson(lPretty)
+EndMethod
+
+Method GetObject() Class JsonModern
+    Return ::oInternalJson
+EndMethod
+
+/*/{Protheus.doc} U_ParseJSON
+    Função de compatibilidade para facilitar a transição do projeto antigo.
+/*/
+Function U_ParseJSON(cString, oObj)
+    Local oParser := JsonModern():New(cString)
+    Local lRet := oParser:Parse()
+    
+    If lRet
+        oObj := oParser:GetObject()
+    Else
+        oObj := oParser:cError
+    EndIf
+Return lRet
